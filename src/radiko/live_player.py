@@ -2,6 +2,8 @@ import subprocess
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 
+from radiko.auth import get_auth_token
+
 STATIONS = {
     "TBS": "https://radiko.jp/v2/station/stream_smh_multi/TBS.xml",
     "QRR": "https://radiko.jp/v2/station/stream_smh_multi/QRR.xml",
@@ -35,6 +37,9 @@ def play_station(station_id="TBS"):
 
     stop()
 
+    print(f"Getting auth token...")
+    auth_token = get_auth_token()
+
     print(f"Getting stream URL: {station_id}")
     stream_url = get_stream_url(station_id)
 
@@ -42,7 +47,12 @@ def play_station(station_id="TBS"):
     print(stream_url)
 
     current_process = subprocess.Popen(
-        ["mpv", "--no-video", stream_url]
+        [
+            "mpv",
+            "--no-video",
+            f"--http-header-fields=X-Radiko-AuthToken: {auth_token}",
+            stream_url,
+        ]
     )
 
 
@@ -53,4 +63,3 @@ def stop():
         print("Stopping...")
         current_process.terminate()
         current_process = None
-
