@@ -1,15 +1,20 @@
-from audio.recorder import record
-from audio.player import play_wav
+from radiko.live_player import play_station, stop
+import time
+
 
 def main():
     print("======================")
-    print(" KoeRadi Pi")
+    print(" KoeRadi Pi Day3")
     print("======================")
 
-    audio_file = record(duration=3)
-    play_wav(audio_file)
+    play_station("TBS")
 
+    print("Playing for 30 seconds...")
+    time.sleep(30)
+
+    stop()
     print("Done.")
+
 
 if __name__ == "__main__":
     main()
