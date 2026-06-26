@@ -1,3 +1,4 @@
+import unicodedata
 from data.programs import find_program
 
 # ==========================================
@@ -64,15 +65,19 @@ EXIT_WORDS = [
 
 def normalize_text(text: str) -> str:
     """
-    Whisperの認識結果を検索しやすい形へ変換
+    音声認識結果を検索しやすい形へ変換
     """
+    text = unicodedata.normalize("NFKC", text)
+
     return (
         text.strip()
         .replace("　", " ")
         .replace("。", "")
         .replace("、", "")
+        .replace(" ", "")
         .upper()
     )
+
 
 
 def parse_command(text: str):

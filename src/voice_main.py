@@ -2,7 +2,8 @@ from audio.recorder import record
 from controller.command_parser import parse_command
 from radiko.live_player import stop
 from services.radio_service import RadioService
-from voice.stt import transcribe
+from voice.vosk_stt import transcribe
+
 
 
 def main():
