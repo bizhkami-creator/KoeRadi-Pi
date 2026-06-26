@@ -1,3 +1,5 @@
+from data.programs import find_program
+
 # ==========================================
 # KoeRadi Pi Command Parser
 # ==========================================
@@ -62,7 +64,7 @@ EXIT_WORDS = [
 
 def normalize_text(text: str) -> str:
     """
-    音声認識結果を検索しやすい形へ変換
+    Whisperの認識結果を検索しやすい形へ変換
     """
     return (
         text.strip()
@@ -94,7 +96,14 @@ def parse_command(text: str):
             return "stop", None
 
     # -----------------------------
-    # Play station
+    # Program / Personality Search
+    # -----------------------------
+    program = find_program(text)
+    if program:
+        return "play", program["station"]
+
+    # -----------------------------
+    # Station Search
     # -----------------------------
     for alias, station in STATION_ALIASES.items():
         if alias.upper() in text:

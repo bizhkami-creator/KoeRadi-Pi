@@ -1,6 +1,7 @@
 from audio.recorder import record
 from controller.command_parser import parse_command
-from radiko.live_player import play_station, stop
+from radiko.live_player import stop
+from services.radio_service import RadioService
 from voice.stt import transcribe
 
 
@@ -8,6 +9,8 @@ def main():
     print("==========================")
     print("   KoeRadi Pi Voice Mode")
     print("==========================")
+
+    radio = RadioService()
 
     while True:
         input("Enterで録音開始...")
@@ -30,7 +33,7 @@ def main():
 
         if action == "play":
             print(f"▶ {target} を再生します")
-            play_station(target)
+            radio.play_live(target)
             continue
 
         print("コマンドを認識できませんでした。")

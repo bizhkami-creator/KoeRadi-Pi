@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from urllib.request import urlopen
 
 
@@ -42,11 +43,25 @@ def search_program(station_id="TBS", keyword="安住"):
     return results
 
 
-if __name__ == "__main__":
-    results = search_program("TBS", "安住")
+def get_current_program(station_id="TBS"):
+    programs = get_weekly_programs(station_id)
+    now = datetime.now().strftime("%Y%m%d%H%M%S")
 
-    for i, p in enumerate(results, start=1):
-        print(f"{i}. {p['title']}")
-        print(f"   {p['ft']} - {p['to']}")
-        print(f"   {p['pfm']}")
-        print()
+    for p in programs:
+        if p["ft"] <= now <= p["to"]:
+            return p
+
+    return None
+
+
+if __name__ == "__main__":
+    current = get_current_program("TBS")
+
+    if current:
+        print("現在の番組:")
+        print(current["title"])
+        print(current["pfm"])
+        print(f"{current['ft']} - {current['to']}")
+    else:
+        print("現在の番組が見つかりませんでした。")
+
