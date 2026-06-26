@@ -1,11 +1,11 @@
 from audio.recorder import record
-from conversation.conversation_service import ConversationService
+from audio.player import play_wav
+from ai.gemini_live_audio_client import ask_live_audio
 
 
 class Assistant:
     def __init__(self):
         self.running = True
-        self.conversation = ConversationService()
 
     def start(self):
         print("==========================")
@@ -18,11 +18,8 @@ class Assistant:
 
             audio_file = record(
                 filename="sounds/assistant_input.wav",
-                duration=5,
+                duration=3,
             )
 
-            reply = self.conversation.chat_with_audio(audio_file)
-
-            print("\nAI:")
-            print(reply)
-
+            reply_wav = ask_live_audio(audio_file)
+            play_wav(reply_wav)
