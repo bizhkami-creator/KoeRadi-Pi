@@ -1,22 +1,103 @@
-def parse_command(text):
-    text = text.strip()
+# ==========================================
+# KoeRadi Pi Command Parser
+# ==========================================
 
-    if text in ["q", "exit", "quit", "終了"]:
-        return "exit", None
+# -----------------------------
+# Station aliases
+# -----------------------------
+STATION_ALIASES = {
+    # TBS
+    "1": "TBS",
+    "TBS": "TBS",
+    "TBSラジオ": "TBS",
+    "TVS": "TBS",
+    "TVSラジオ": "TBS",
+    "PBS": "TBS",
+    "PBSラジオ": "TBS",
+    "ティービーエス": "TBS",
+    "ティービーエスラジオ": "TBS",
+    "キービーです": "TBS",
+    "DBS": "TBS",
+    "赤坂": "TBS",
 
-    if text in ["s", "stop", "停止", "止めて", "ストップ"]:
-        return "stop", None
+    # 文化放送
+    "2": "QRR",
+    "QRR": "QRR",
+    "文化放送": "QRR",
 
-    if "TBS" in text or "TBSラジオ" in text:
-        return "play", "TBS"
+    # ニッポン放送
+    "3": "LFR",
+    "LFR": "LFR",
+    "ニッポン放送": "LFR",
+    "日本放送": "LFR",
 
-    if "文化放送" in text or "QRR" in text:
-        return "play", "QRR"
+    # TOKYO FM
+    "4": "FMT",
+    "FMT": "FMT",
+    "TOKYO FM": "FMT",
+    "TOKYOFM": "FMT",
+    "東京FM": "FMT",
+    "東京エフエム": "FMT",
+}
 
-    if "ニッポン放送" in text or "LFR" in text:
-        return "play", "LFR"
+# -----------------------------
+# Stop / Exit
+# -----------------------------
+STOP_WORDS = [
+    "止めて",
+    "停止",
+    "ストップ",
+    "止まれ",
+    "STOP",
+]
 
-    if "TOKYO FM" in text or "東京FM" in text or "FMT" in text:
-        return "play", "FMT"
+EXIT_WORDS = [
+    "終了",
+    "終わり",
+    "やめる",
+    "EXIT",
+    "QUIT",
+]
+
+
+def normalize_text(text: str) -> str:
+    """
+    音声認識結果を検索しやすい形へ変換
+    """
+    return (
+        text.strip()
+        .replace("　", " ")
+        .replace("。", "")
+        .replace("、", "")
+        .upper()
+    )
+
+
+def parse_command(text: str):
+    text = normalize_text(text)
+
+    if not text:
+        return "unknown", None
+
+    # -----------------------------
+    # Exit
+    # -----------------------------
+    for word in EXIT_WORDS:
+        if word.upper() in text:
+            return "exit", None
+
+    # -----------------------------
+    # Stop
+    # -----------------------------
+    for word in STOP_WORDS:
+        if word.upper() in text:
+            return "stop", None
+
+    # -----------------------------
+    # Play station
+    # -----------------------------
+    for alias, station in STATION_ALIASES.items():
+        if alias.upper() in text:
+            return "play", station
 
     return "unknown", None
